@@ -1,0 +1,190 @@
+# 🚀 Guia: Como Hospedar no GitHub Pages
+
+## Passo a Passo Completo
+
+### 1️⃣ Criar Repositório no GitHub
+
+1. Acesse [github.com](https://github.com)
+2. Faça login (ou crie uma conta)
+3. Clique no botão **"New"** (ou ícone +) → **"New repository"**
+4. Preencha:
+   - **Repository name**: `akasha-content-generator` (ou o nome que preferir)
+   - **Description**: "Gerador de conteúdo magnético com IA para Akasha Hub"
+   - Deixe como **Public** (para usar GitHub Pages grátis)
+   - ✅ Marque: **"Add a README file"**
+5. Clique em **"Create repository"**
+
+---
+
+### 2️⃣ Fazer Upload dos Arquivos
+
+#### Opção A: Via Interface Web (Mais Fácil)
+
+1. No seu repositório criado, clique em **"Add file"** → **"Upload files"**
+2. Arraste ou selecione os arquivos:
+   - `akasha-gerador-conteudo.html`
+   - `README.md` (substitua o que foi criado automaticamente)
+3. Role até o fim da página
+4. Em "Commit changes":
+   - Escreva: `Adiciona gerador de conteúdo Akasha Hub`
+5. Clique em **"Commit changes"**
+
+#### Opção B: Via Git (Linha de Comando)
+
+```bash
+# Clone seu repositório vazio
+git clone https://github.com/SEU-USUARIO/akasha-content-generator.git
+
+# Entre na pasta
+cd akasha-content-generator
+
+# Copie os arquivos para dentro da pasta
+
+# Adicione todos os arquivos
+git add .
+
+# Faça o commit
+git commit -m "Adiciona gerador de conteúdo Akasha Hub"
+
+# Envie para o GitHub
+git push origin main
+```
+
+---
+
+### 3️⃣ Ativar GitHub Pages
+
+1. No seu repositório, clique em **"Settings"** (⚙️)
+2. No menu lateral esquerdo, clique em **"Pages"**
+3. Em **"Source"**, selecione:
+   - Branch: **main** (ou master)
+   - Folder: **/ (root)**
+4. Clique em **"Save"**
+5. Aguarde 1-2 minutos
+
+✅ **Pronto!** Seu app estará disponível em:
+```
+https://SEU-USUARIO.github.io/akasha-content-generator/akasha-gerador-conteudo.html
+```
+
+---
+
+### 4️⃣ Personalizar e Melhorar
+
+#### Renomear o arquivo para index.html (Opcional)
+
+Se quiser que o link seja mais curto, renomeie o arquivo:
+
+1. No repositório, clique no arquivo `akasha-gerador-conteudo.html`
+2. Clique no ícone de lápis (✏️) para editar
+3. Mude o nome do arquivo para `index.html`
+4. Salve
+
+Agora o link será simplesmente:
+```
+https://SEU-USUARIO.github.io/akasha-content-generator/
+```
+
+---
+
+### 5️⃣ Atualizar o README
+
+Edite o arquivo `README.md` e substitua:
+
+```markdown
+👉 [**CLIQUE AQUI PARA USAR**](https://SEU-USUARIO.github.io/akasha-content-generator/akasha-gerador-conteudo.html)
+```
+
+Por:
+
+```markdown
+👉 [**CLIQUE AQUI PARA USAR**](https://seu-usuario-real.github.io/akasha-content-generator/akasha-gerador-conteudo.html)
+```
+
+---
+
+## 🎯 Verificação Final
+
+Teste se está funcionando:
+
+1. ✅ Acesse o link do GitHub Pages
+2. ✅ Veja se o design carregou corretamente
+3. ✅ Teste com uma API Key válida do Gemini
+4. ✅ Gere um conteúdo de teste
+
+---
+
+## 🔄 Como Atualizar o App
+
+Sempre que fizer alterações:
+
+### Via Interface Web:
+1. Acesse o arquivo no GitHub
+2. Clique no ícone de lápis (✏️)
+3. Faça as alterações
+4. Role até o fim e clique em "Commit changes"
+
+### Via Git:
+```bash
+# Faça as alterações nos arquivos
+# Depois:
+
+git add .
+git commit -m "Descrição da alteração"
+git push origin main
+```
+
+Aguarde 1-2 minutos e as mudanças estarão online!
+
+---
+
+## 🎨 Personalizações Sugeridas
+
+### Mudar as cores do app:
+No arquivo HTML, procure por:
+- `#8a2be2` (roxo) - linha ~100
+- `#00ff9d` (verde neon) - linha ~50
+
+### Adicionar seu domínio personalizado:
+1. Em Settings → Pages
+2. Em "Custom domain"
+3. Digite: `app.akashahub.com.br`
+4. Configure o DNS no seu provedor
+
+---
+
+## 📱 Compartilhar
+
+Depois de publicado, compartilhe:
+
+- ✅ No Instagram do @akasha.hub
+- ✅ No site akashahub.com.br
+- ✅ Com sua audiência
+
+---
+
+## 🆘 Problemas Comuns
+
+### O site não carrega
+- Aguarde 2-5 minutos após ativar Pages
+- Limpe o cache do navegador (Ctrl+Shift+R)
+- Verifique se o branch está correto
+
+### Erro 404
+- Confirme que o arquivo está na raiz do repositório
+- Verifique o nome exato do arquivo na URL
+
+### API não funciona
+- Verifique se a API Key está correta
+- Teste em https://makersuite.google.com se a key é válida
+- Verifique se tem internet
+
+---
+
+## 🎉 Pronto!
+
+Agora você tem um app profissional de IA rodando gratuitamente no GitHub Pages!
+
+**Dúvidas?**
+- Abra uma Issue no repositório
+- Entre em contato via Instagram: @akasha.hub
