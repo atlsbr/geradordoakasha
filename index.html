@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akasha Hub - Gerador de Conteúdo IA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2e 50%, #0a0a0a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(138, 43, 226, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(0, 255, 157, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00ff9d 0%, #8a2be2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #a0a0a0;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .card {
+            background: rgba(20, 20, 30, 0.8);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(138, 43, 226, 0.3);
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #00ff9d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="text"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(10, 10, 15, 0.6);
+            border: 2px solid rgba(138, 43, 226, 0.3);
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #00ff9d;
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.2);
+            background: rgba(10, 10, 15, 0.8);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .btn-generate {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #8a2be2 0%, #00ff9d 100%);
+            border: none;
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.4);
+            margin-top: 10px;
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(138, 43, 226, 0.6);
+        }
+
+        .btn-generate:active {
+            transform: translateY(0);
+        }
+
+        .btn-generate:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-area {
+            margin-top: 40px;
+            display: none;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .result-area.active {
+            display: block;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .result-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #00ff9d;
+        }
+
+        .btn-copy {
+            padding: 10px 20px;
+            background: rgba(138, 43, 226, 0.3);
+            border: 2px solid #8a2be2;
+            border-radius: 8px;
+            color: #ffffff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-copy:hover {
+            background: rgba(138, 43, 226, 0.5);
+            transform: scale(1.05);
+        }
+
+        .result-content {
+            background: rgba(10, 10, 15, 0.6);
+            border: 2px solid rgba(0, 255, 157, 0.3);
+            border-radius: 12px;
+            padding: 25px;
+            white-space: pre-wrap;
+            line-height: 1.8;
+            font-size: 1rem;
+            color: #e0e0e0;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 20px;
+            border: 4px solid rgba(138, 43, 226, 0.3);
+            border-top: 4px solid #00ff9d;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-text {
+            color: #a0a0a0;
+            font-size: 0.95rem;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .error-message {
+            display: none;
+            background: rgba(255, 50, 50, 0.2);
+            border: 2px solid rgba(255, 50, 50, 0.5);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 20px;
+            color: #ff6b6b;
+        }
+
+        .error-message.active {
+            display: block;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .info-box {
+            background: rgba(0, 255, 157, 0.1);
+            border-left: 4px solid #00ff9d;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+            color: #b0b0b0;
+        }
+
+        .info-box strong {
+            color: #00ff9d;
+        }
+
+        .info-box a {
+            color: #00ff9d;
+            text-decoration: underline;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: #8a2be2;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: #00ff9d;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .card {
+                padding: 25px;
+            }
+
+            .logo {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 0.95rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .result-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+        }
+
+        .result-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .result-content::-webkit-scrollbar-track {
+            background: rgba(10, 10, 15, 0.5);
+            border-radius: 10px;
+        }
+
+        .result-content::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #8a2be2, #00ff9d);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">AKASHA HUB</div>
+            <div class="subtitle">Gerador de Conteúdo Magnético com IA</div>
+        </div>
+
+        <div class="card">
+            <div class="info-box">
+                <strong>🔑 API Key do Gemini:</strong> Obtenha gratuitamente em <a href="https://makersuite.google.com/app/apikey" target="_blank">Google AI Studio</a>
+            </div>
+
+            <form id="contentForm">
+                <div class="form-group">
+                    <label for="apiKey">🔐 API Key do Gemini</label>
+                    <input type="text" id="apiKey" placeholder="Cole sua API Key aqui..." required>
+                </div>
+
+                <div class="form-group">
+                    <label for="theme">💡 Tema do Conteúdo</label>
+                    <textarea id="theme" placeholder="Ex: Como expandir sua consciência financeira e atrair prosperidade..." required></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="contentType">📱 Tipo de Conteúdo</label>
+                        <select id="contentType" required>
+                            <option value="">Selecione...</option>
+                            <option value="instagram">Post Instagram</option>
+                            <option value="reels">Roteiro de Reels</option>
+                            <option value="tiktok">TikTok</option>
+                            <option value="twitter">Tweet/X</option>
+                            <option value="blog">Artigo de Blog</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tone">🎭 Tom de Voz</label>
+                        <select id="tone" required>
+                            <option value="">Selecione...</option>
+                            <option value="hipnotico">Hipnótico</option>
+                            <option value="emocional">Emocional</option>
+                            <option value="provocador">Provocador</option>
+                            <option value="autoridade">Autoridade</option>
+                            <option value="misterioso">Misterioso</option>
+                            <option value="transformador">Transformador</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="audience">🎯 Público-Alvo</label>
+                    <input type="text" id="audience" placeholder="Ex: Empreendedores buscando expansão de consciência e prosperidade..." required>
+                </div>
+
+                <button type="submit" class="btn-generate" id="generateBtn">
+                    ✨ Gerar Conteúdo Magnético
+                </button>
+            </form>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <div class="loading-text">Criando conteúdo de alto impacto...</div>
+            </div>
+
+            <div class="error-message" id="errorMessage"></div>
+
+            <div class="result-area" id="resultArea">
+                <div class="result-header">
+                    <div class="result-title">🎯 Conteúdo Gerado</div>
+                    <button class="btn-copy" id="copyBtn">📋 Copiar</button>
+                </div>
+                <div class="result-content" id="resultContent"></div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Criado para <a href="https://akashahub.com.br" target="_blank">akashahub.com.br</a> | 
+            Instagram: <a href="https://instagram.com/akasha.hub" target="_blank">@akasha.hub</a>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('contentForm');
+        const generateBtn = document.getElementById('generateBtn');
+        const loading = document.getElementById('loading');
+        const errorMessage = document.getElementById('errorMessage');
+        const resultArea = document.getElementById('resultArea');
+        const resultContent = document.getElementById('resultContent');
+        const copyBtn = document.getElementById('copyBtn');
+
+        const contentPrompts = {
+            instagram: `Crie um post magnético para Instagram sobre: {theme}
+
+CONTEXTO: Akasha Hub (akashahub.com.br / @akasha.hub) - plataforma de transformação, expansão de consciência, prosperidade e poder pessoal.
+
+PÚBLICO: {audience}
+TOM: {tone}
+
+ESTRUTURA OBRIGATÓRIA:
+1. HOOK INICIAL (primeira linha): Deve quebrar o padrão mental, gerar curiosidade intensa ou criar ruptura de expectativa
+2. DESENVOLVIMENTO: 3-5 parágrafos que:
+   - Criem conexão emocional profunda
+   - Tragam insights que pareçam "revelações"
+   - Diferenciem claramente da massa
+   - Mostrem autoridade e experiência
+3. CTA FINAL: Chamada para ação poderosa, que estimule desejo e movimento
+
+REGRAS:
+- Use emojis estrategicamente (não exagere)
+- Crie espaçamento visual (quebras de linha)
+- Linguagem autêntica, não corporativa
+- Gatilhos psicológicos sutis
+- Máximo 2200 caracteres
+- Evite clichês comuns de coaching
+
+IMPORTANTE: O conteúdo deve soar como se fosse escrito por alguém que VIVEU a transformação, não apenas estudou teoria.`,
+
+            reels: `Crie um roteiro completo de Reels sobre: {theme}
+
+CONTEXTO: Akasha Hub (akashahub.com.br / @akasha.hub) - transformação de consciência e prosperidade.
+
+PÚBLICO: {audience}
+TOM: {tone}
+
+ESTRUTURA DO ROTEIRO:
+
+[GANCHO - 0-3 seg]
+Frase de impacto que para o scroll
+
+[DESENVOLVIMENTO - 3-20 seg]
+3-5 cenas rápidas com:
+- O que mostrar/falar
+- Texto na tela (se houver)
+- Transição
+
+[CHAMADA FINAL - 20-30 seg]
+CTA forte + direcionamento
+
+REGRAS:
+- Linguagem direta e visceral
+- Ritmo dinâmico
+- Hooks que geram curiosidade extrema
+- Evite abertura genérica
+- Música sugerida (opcional)
+- Hashtags estratégicas (5-7)
+
+FORMATO: Entregue um roteiro prático, como se fosse para executar hoje.`,
+
+            tiktok: `Crie conteúdo viral para TikTok sobre: {theme}
+
+CONTEXTO: Akasha Hub (akashahub.com.br / @akasha.hub) - despertar de consciência e expansão.
+
+PÚBLICO: {audience}
+TOM: {tone}
+
+ESTRUTURA:
+
+[HOOK - Primeiro 1 segundo]
+Frase que FORÇA o usuário a parar
+
+[CORPO - 10-25 segundos]
+Revelação/história/insight dividido em:
+- Problema/dor identificável
+- Virada/insight surpreendente
+- Revelação final
+
+[ENCERRAMENTO - 3-5 segundos]
+CTA magnético
+
+REGRAS:
+- Ultra direto, sem enrolação
+- Linguagem da geração Z/Millennial
+- Ganchos psicológicos fortes
+- Hashtags virais (8-10)
+- Sugestão de som/trend (se aplicável)
+- Formato vertical, pensado para celular
+
+IMPORTANTE: Crie algo que as pessoas sintam necessidade de salvar e compartilhar.`,
+
+            twitter: `Crie um tweet/thread impactante sobre: {theme}
+
+CONTEXTO: Akasha Hub (akashahub.com.br / @akasha.hub) - transformação e poder pessoal.
+
+PÚBLICO: {audience}
+TOM: {tone}
+
+SE TWEET ÚNICO:
+- Máximo 280 caracteres
+- Hook + insight + CTA
+- Linguagem direta e provocadora
+
+SE THREAD (3-7 tweets):
+1º tweet: Hook devastador
+2-6º tweets: Desenvolvimento com insights valiosos
+Último tweet: Conclusão + CTA
+
+REGRAS:
+- Evite jargão corporativo
+- Use quebras de linha estratégicas
+- 1-2 emojis por tweet (máximo)
+- Cada tweet deve funcionar sozinho
+- Provocar pensamento, não apenas informar
+
+ESTILO: Como se fosse um insider compartilhando segredos que ninguém mais fala.`,
+
+            blog: `Crie um artigo completo de blog sobre: {theme}
+
+CONTEXTO: Akasha Hub (akashahub.com.br / @akasha.hub) - plataforma de expansão de consciência, prosperidade e transformação pessoal.
+
+PÚBLICO: {audience}
+TOM: {tone}
+
+ESTRUTURA:
+
+[TÍTULO]
+Magnético, com promessa clara ou curiosidade intensa
+
+[INTRODUÇÃO - 2-3 parágrafos]
+- Hook que conecta emocionalmente
+- Apresentação do problema/desejo
+- Promessa do artigo
+
+[DESENVOLVIMENTO - 5-8 seções]
+Cada seção com:
+- Subtítulo poderoso
+- 2-4 parágrafos
+- Exemplos práticos
+- Insights diferenciados
+
+[CONCLUSÃO]
+- Síntese transformadora
+- CTA claro e desejável
+
+REGRAS:
+- Tom autêntico, como conversa profunda
+- Evite introduções genéricas
+- Use storytelling sempre que possível
+- Parágrafos curtos (3-4 linhas máximo)
+- Linguagem acessível mas sofisticada
+- 1500-2500 palavras
+
+IMPORTANTE: O artigo deve fazer o leitor sentir que descobriu algo raro, não apenas "mais um conteúdo".`
+        };
+
+        async function generateContent(apiKey, theme, contentType, tone, audience) {
+            const promptTemplate = contentPrompts[contentType];
+            
+            const finalPrompt = promptTemplate
+                .replace('{theme}', theme)
+                .replace('{audience}', audience)
+                .replace('{tone}', tone);
+
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [{
+                            text: finalPrompt
+                        }]
+                    }],
+                    generationConfig: {
+                        temperature: 0.9,
+                        topK: 40,
+                        topP: 0.95,
+                        maxOutputTokens: 2048,
+                    }
+                })
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error?.message || 'Erro ao gerar conteúdo');
+            }
+
+            const data = await response.json();
+            return data.candidates[0].content.parts[0].text;
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const apiKey = document.getElementById('apiKey').value.trim();
+            const theme = document.getElementById('theme').value.trim();
+            const contentType = document.getElementById('contentType').value;
+            const tone = document.getElementById('tone').value;
+            const audience = document.getElementById('audience').value.trim();
+
+            if (!apiKey || !theme || !contentType || !tone || !audience) {
+                showError('Por favor, preencha todos os campos!');
+                return;
+            }
+
+            resultArea.classList.remove('active');
+            errorMessage.classList.remove('active');
+
+            loading.classList.add('active');
+            generateBtn.disabled = true;
+            generateBtn.textContent = '⏳ Gerando...';
+
+            try {
+                const content = await generateContent(apiKey, theme, contentType, tone, audience);
+                
+                resultContent.textContent = content;
+                resultArea.classList.add('active');
+
+                setTimeout(() => {
+                    resultArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 100);
+
+            } catch (error) {
+                showError(error.message || 'Erro ao gerar conteúdo. Verifique sua API Key e tente novamente.');
+            } finally {
+                loading.classList.remove('active');
+                generateBtn.disabled = false;
+                generateBtn.textContent = '✨ Gerar Conteúdo Magnético';
+            }
+        });
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.add('active');
+            
+            setTimeout(() => {
+                errorMessage.classList.remove('active');
+            }, 5000);
+        }
+
+        copyBtn.addEventListener('click', () => {
+            const text = resultContent.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = '✅ Copiado!';
+                copyBtn.style.background = 'rgba(0, 255, 157, 0.3)';
+                copyBtn.style.borderColor = '#00ff9d';
+                
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                    copyBtn.style.background = '';
+                    copyBtn.style.borderColor = '';
+                }, 2000);
+            }).catch(err => {
+                showError('Erro ao copiar. Tente selecionar e copiar manualmente.');
+            });
+        });
+
+        const apiKeyInput = document.getElementById('apiKey');
+        
+        const savedApiKey = localStorage.getItem('gemini_api_key');
+        if (savedApiKey) {
+            apiKeyInput.value = savedApiKey;
+        }
+
+        apiKeyInput.addEventListener('change', (e) => {
+            const key = e.target.value.trim();
+            if (key) {
+                localStorage.setItem('gemini_api_key', key);
+            }
+        });
+    </script>
+</body>
+</html>
